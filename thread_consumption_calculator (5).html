@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Factory Thread Consumption Calculator</title>
+<style>
+  :root{
+    --bg:#f4f7fb;--surface:#ffffff;--surface2:#f8fafc;--ink:#162033;--muted:#667085;
+    --line:#dfe5ee;--brand:#0f766e;--brand2:#115e59;--accent:#f59e0b;--danger:#c2410c;
+    --ok:#15803d;--shadow:0 14px 38px rgba(15,23,42,.08);--radius:18px;
+  }
+  *{box-sizing:border-box} body{margin:0;background:linear-gradient(135deg,#eef7f5 0,#f6f8fb 40%,#eef2ff 100%);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+  button,input,select,textarea{font:inherit}.app{max-width:1600px;margin:auto;padding:24px}.topbar{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px}.brand{display:flex;gap:13px;align-items:center}.logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--brand),#14b8a6);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:var(--shadow)}h1{font-size:23px;margin:0}.subtitle{color:var(--muted);font-size:13px;margin-top:3px}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 13px;border-radius:11px;cursor:pointer;font-weight:700;transition:.15s}.btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(15,23,42,.08)}.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}.btn.danger{color:#b42318}.btn.small{padding:6px 9px;font-size:12px}.tabs{display:flex;gap:7px;margin:0 0 16px;overflow:auto;padding:4px}.tab{border:0;background:transparent;color:var(--muted);font-weight:800;padding:10px 14px;border-radius:11px;cursor:pointer;white-space:nowrap}.tab.active{background:#fff;color:var(--brand);box-shadow:0 4px 16px rgba(15,23,42,.08)}.panel{display:none}.panel.active{display:block}.card{background:rgba(255,255,255,.94);border:1px solid rgba(223,229,238,.85);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.card h2,.card h3{margin:0}.card h2{font-size:17px}.card h3{font-size:15px}.helper{font-size:12px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.field{grid-column:span 3}.field.w2{grid-column:span 2}.field.w4{grid-column:span 4}.field.w6{grid-column:span 6}.field.w12{grid-column:span 12}label{display:block;font-size:12px;font-weight:800;color:#344054;margin:0 0 6px}.bn{display:block;color:#98a2b3;font-size:10px;font-weight:600;margin-top:1px}input,select,textarea{width:100%;border:1px solid var(--line);background:#fff;color:var(--ink);padding:10px 11px;border-radius:10px;outline:none}input:focus,select:focus,textarea:focus{border-color:#2dd4bf;box-shadow:0 0 0 3px rgba(45,212,191,.13)}input[readonly]{background:#f2f4f7;color:#475467}.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}.kpi{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;box-shadow:0 8px 22px rgba(15,23,42,.05)}.kpi .name{font-size:11px;color:var(--muted);font-weight:800}.kpi .value{font-size:21px;font-weight:900;margin-top:5px;letter-spacing:-.4px}.kpi .unit{font-size:11px;color:var(--muted);margin-left:3px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:13px;background:#fff}table{width:100%;border-collapse:separate;border-spacing:0;min-width:980px}th{position:sticky;top:0;z-index:2;background:#f2f4f7;color:#344054;font-size:11px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:10px;border-bottom:1px solid var(--line)}td{padding:9px 10px;border-bottom:1px solid #eef1f5;font-size:13px;vertical-align:top}tr:last-child td{border-bottom:0}.empty{text-align:center;padding:30px;color:var(--muted)}.colour-chip{display:inline-flex;align-items:center;gap:7px}.swatch{width:13px;height:13px;border-radius:50%;border:1px solid #cbd5e1;background:#d1d5db}.operation{border:1px solid var(--line);border-radius:16px;background:#fff;margin-bottom:12px;overflow:hidden}.op-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:linear-gradient(90deg,#f8fafc,#f0fdfa);cursor:pointer}.op-title{display:flex;gap:10px;align-items:center}.badge{padding:4px 8px;border-radius:999px;background:#ccfbf1;color:#115e59;font-weight:900;font-size:11px}.op-body{padding:14px}.op-body.collapsed{display:none}.formula{background:#0f172a;color:#d1fae5;border-radius:10px;padding:10px 12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;margin-top:12px;overflow:auto}.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;margin-top:12px}.path{border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--surface2)}.path-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-weight:900}.path-factor{font-size:11px;background:#e0e7ff;color:#3730a3;padding:3px 7px;border-radius:999px}.path .grid{gap:8px}.path .field{grid-column:span 6}.path .field.w12{grid-column:span 12}.path-result{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.mini{background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px}.mini b{display:block;font-size:12px}.mini span{font-size:9px;color:var(--muted)}.notice{border-left:4px solid var(--accent);background:#fffbeb;padding:11px 13px;border-radius:10px;color:#7c2d12;font-size:12px;margin-bottom:12px}.error{border-left-color:#ef4444;background:#fff1f2;color:#9f1239}.success{border-left-color:#22c55e;background:#f0fdf4;color:#166534}.split{display:grid;grid-template-columns:1.3fr .7fr;gap:16px}.chart-row{display:grid;grid-template-columns:180px 1fr 90px;align-items:center;gap:10px;margin:9px 0;font-size:12px}.bar{height:10px;background:#ecfdf5;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),#2dd4bf);border-radius:999px}.muted{color:var(--muted)}.right{text-align:right}.nowrap{white-space:nowrap}.hidden{display:none!important}.footer{color:var(--muted);font-size:11px;text-align:center;padding:8px 0 22px}.master-row-active td{background:#f0fdfa}.pill{display:inline-block;padding:3px 7px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:10px;font-weight:800}.checkbox{display:flex;align-items:center;gap:7px}.checkbox input{width:auto}.file-input{display:none}
+  @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.field,.field.w2,.field.w4{grid-column:span 4}.split{grid-template-columns:1fr}}
+  @media(max-width:720px){.app{padding:12px}.topbar{align-items:flex-start;flex-direction:column}.kpis{grid-template-columns:repeat(2,1fr)}.field,.field.w2,.field.w4,.field.w6{grid-column:span 12}.actions{width:100%}.btn{flex:1}.path-result{grid-template-columns:1fr}.chart-row{grid-template-columns:110px 1fr 65px}}
+  @media print{body{background:#fff}.actions,.tabs,.no-print{display:none!important}.panel{display:block!important}.panel:not(#summaryPanel){display:none!important}.card,.kpi{box-shadow:none}.app{max-width:none;padding:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><div class="logo">TC</div><div><h1>Thread Consumption Calculator</h1><div class="subtitle">Factory-standard deterministic calculator • ইঞ্চি থেকে মিটার • Colour & Thread Type Summary</div></div></div>
+    <div class="actions no-print">
+      <button class="btn" id="saveBtn">Save</button>
+      <button class="btn" id="exportJsonBtn">Export Project</button>
+      <button class="btn" id="importJsonBtn">Import Project</button>
+      <input class="file-input" type="file" id="importFile" accept="application/json" />
+      <button class="btn" id="exportCsvBtn">Export Summary CSV</button>
+      <button class="btn primary" id="printBtn">Print / PDF</button>
+    </div>
+  </div>
+
+  <div class="tabs no-print">
+    <button class="tab active" data-target="setupPanel">1. Style & Colourways</button>
+    <button class="tab" data-target="operationsPanel">2. Operations & Threads</button>
+    <button class="tab" data-target="summaryPanel">3. Summary</button>
+    <button class="tab" data-target="masterPanel">Factory Stitch Master</button>
+  </div>
+
+  <section id="setupPanel" class="panel active">
+    <div class="card">
+      <div class="card-head"><div><h2>Style Information</h2><div class="helper">স্টাইল, অর্ডার ও booking additions</div></div></div>
+      <div class="grid">
+        <div class="field"><label>Factory<span class="bn">ফ্যাক্টরি</span></label><input id="factory" placeholder="Factory name" /></div>
+        <div class="field"><label>Buyer<span class="bn">বায়ার</span></label><input id="buyer" placeholder="Buyer name" /></div>
+        <div class="field"><label>Style Number<span class="bn">স্টাইল নম্বর</span></label><input id="styleNo" placeholder="STYLE-001" /></div>
+        <div class="field"><label>Order Number<span class="bn">অর্ডার নম্বর</span></label><input id="orderNo" placeholder="PO-001" /></div>
+        <div class="field"><label>Garment Type<span class="bn">গার্মেন্ট টাইপ</span></label><input id="garmentType" placeholder="Polo shirt" /></div>
+        <div class="field"><label>Season<span class="bn">সিজন</span></label><input id="season" placeholder="FW 2026" /></div>
+        <div class="field"><label>Total Order Quantity<span class="bn">মোট অর্ডার পরিমাণ</span></label><input id="orderQty" type="number" min="0" step="1" value="0" /></div>
+        <div class="field"><label>Currency<span class="bn">মুদ্রা</span></label><select id="currency"><option>USD</option><option>BDT</option><option>EUR</option><option>GBP</option></select></div>
+        <div class="field"><label>Sample Requirement %<span class="bn">স্যাম্পল অতিরিক্ত</span></label><input id="samplePct" type="number" min="0" step="0.01" value="0" /></div>
+        <div class="field"><label>Setup Requirement %<span class="bn">মেশিন সেটআপ অতিরিক্ত</span></label><input id="setupPct" type="number" min="0" step="0.01" value="0" /></div>
+        <div class="field"><label>Safety Stock %<span class="bn">সেফটি স্টক</span></label><input id="safetyPct" type="number" min="0" step="0.01" value="0" /></div>
+        <div class="field"><label>Prepared By<span class="bn">প্রস্তুতকারী</span></label><input id="preparedBy" placeholder="Name" /></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h2>Garment Colourways</h2><div class="helper">Colour-wise quantity total must match the order quantity.</div></div><button class="btn primary" id="addColourBtn">+ Add Colourway</button></div>
+      <div id="colourValidation"></div>
+      <div class="table-wrap"><table><thead><tr><th>Garment Colour</th><th>Colour Code</th><th>Visual</th><th>Order Quantity</th><th class="no-print">Action</th></tr></thead><tbody id="colourBody"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="operationsPanel" class="panel">
+    <div class="card">
+      <div class="card-head"><div><h2>Operations & Thread Assignment</h2><div class="helper">Select stitch class to load factory factors automatically. Assign thread colour/type for every active path.</div></div><button class="btn primary" id="addOperationBtn">+ Add Operation</button></div>
+      <div class="notice">SPI, GSM, thickness, plies, thread Tex, seam type and gauge are captured for calibration. They do not change the factor unless an approved multiplier is entered.</div>
+      <div id="operationValidation"></div>
+      <div id="operationsList"></div>
+    </div>
+  </section>
+
+  <section id="summaryPanel" class="panel">
+    <div class="kpis">
+      <div class="kpi"><div class="name">Avg. Net / Garment</div><div class="value" id="kpiAvgNet">0.000<span class="unit">m</span></div></div>
+      <div class="kpi"><div class="name">Final Order Requirement</div><div class="value" id="kpiFinal">0.00<span class="unit">m</span></div></div>
+      <div class="kpi"><div class="name">Total Wastage</div><div class="value" id="kpiWaste">0.00<span class="unit">m</span></div></div>
+      <div class="kpi"><div class="name">Rounded Cones</div><div class="value" id="kpiCones">0</div></div>
+      <div class="kpi"><div class="name">Thread SKUs</div><div class="value" id="kpiSkus">0</div></div>
+      <div class="kpi"><div class="name">Purchase Cost</div><div class="value" id="kpiCost">0.00</div></div>
+    </div>
+
+    <div id="summaryValidation"></div>
+    <div class="card">
+      <div class="card-head"><div><h2>Colour-wise Summary</h2><div class="helper">Garment colour + thread colour + thread type + SKU</div></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Garment Colour</th><th>Thread Colour</th><th>Thread Type</th><th>Tex/Ticket</th><th>SKU</th><th>Net m</th><th>Wastage m</th><th>Booking Additions m</th><th>Final m</th><th>Exact Cones</th><th>Rounded</th><th>Cost</th></tr></thead><tbody id="colourSummaryBody"></tbody></table></div>
+    </div>
+
+    <div class="split">
+      <div class="card">
+        <div class="card-head"><div><h2>Thread Type-wise Summary</h2></div></div>
+        <div class="table-wrap"><table><thead><tr><th>Thread Type</th><th>Tex/Ticket</th><th>SKUs</th><th>Net m</th><th>Final m</th><th>Cones</th><th>Cost</th></tr></thead><tbody id="typeSummaryBody"></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h2>Highest Consumption Operations</h2></div></div>
+        <div id="opChart"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><h2>Operation-wise Calculation</h2><div class="helper">Per-garment values and order requirement</div></div></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Operation</th><th>Colourway</th><th>Stitch</th><th>Measurement</th><th>Frequency</th><th>Net / Garment m</th><th>Final / Garment m</th><th>Order Qty</th><th>Final Order m</th></tr></thead><tbody id="operationSummaryBody"></tbody></table></div>
+    </div>
+  </section>
+
+  <section id="masterPanel" class="panel">
+    <div class="card">
+      <div class="card-head"><div><h2>Approved Factory Stitch Master</h2><div class="helper">Read-only. Stitch 516 corrected to total factor 22.6 with no spreader factor.</div></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Class</th><th>Description</th><th>Machine</th><th>Formula</th><th>Needle Factors</th><th>Bobbin</th><th>Looper Factors</th><th>Spreader</th><th>Total Factor</th><th>Tail Allowance</th></tr></thead><tbody id="masterBody"></tbody></table></div>
+    </div>
+  </section>
+  <div class="footer">Deterministic factory calculation • 1 inch = 0.0254 metre • Data is saved locally in this browser</div>
+</div>
+<script>
+"use strict";
+const MASTER = [
+ {code:"301",description:"Single Needle Lockstitch",machine:"SNLS",family:"A",allowance:6,paths:{"Needle 1":2,"Bobbin 1":2}},
+ {code:"304",description:"Zigzag Lockstitch",machine:"Bartack / Buttonhole / Zigzag",family:"A",allowance:12,paths:{"Needle 1":5,"Bobbin 1":5}},
+ {code:"401",description:"Double Locked Chainstitch",machine:"DNCS",family:"B",allowance:2,paths:{"Needle 1":2.5,"Looper 1":5}},
+ {code:"402",description:"2-Needle Chainstitch",machine:"Double needle chainstitch",family:"B",allowance:2,paths:{"Needle 1":2.5,"Needle 2":2.5,"Looper 1":10}},
+ {code:"406",description:"2-Needle Cover Stitch (bottom cover)",machine:"Cover stitch machine",family:"B",allowance:2,paths:{"Needle 1":2.7,"Needle 2":2.7,"Looper 1":11.6}},
+ {code:"407",description:"3-Needle Cover Stitch (bottom cover)",machine:"Cover stitch machine",family:"B",allowance:2,paths:{"Needle 1":2.7,"Needle 2":2.7,"Needle 3":2.7,"Looper 1":14.2}},
+ {code:"408",description:"2-Needle Chainstitch with top cover thread",machine:"Cover and chain stitch machine",family:"B",allowance:2,paths:{"Needle 1":2.7,"Needle 2":2.7,"Looper 1":10,"Spreader 1":9.6}},
+ {code:"504",description:"3-Thread Overlock",machine:"3-thread overlock / serger",family:"B",allowance:6,paths:{"Needle 1":3.6,"Looper 1":7,"Looper 2":7.4}},
+ {code:"512",description:"4-Thread Overlock / Mock Safety",machine:"2-needle overlock",family:"B",allowance:6,paths:{"Needle 1":2.5,"Needle 2":2.5,"Looper 1":7,"Looper 2":8}},
+ {code:"514",description:"2-Needle 4-Thread Overedge",machine:"Overedging stitch",family:"B",allowance:6,paths:{"Needle 1":2.5,"Needle 2":2.5,"Looper 1":8.5,"Looper 2":8.5}},
+ {code:"516",description:"5-Thread Safety Stitch (401+504)",machine:"Safety stitch overedging machine",family:"B",allowance:6,paths:{"Needle 1":2.8,"Needle 2":2.8,"Looper 1":6,"Looper 2":6,"Looper 3":5}},
+ {code:"602",description:"4-Thread Flatlock",machine:"Interlock machine (2 needle)",family:"B",allowance:3,paths:{"Needle 1":2.5,"Needle 2":2.5,"Looper 1":10,"Spreader 1":10}},
+ {code:"605",description:"5-Thread Flatlock",machine:"Interlock machine (3 needle)",family:"B",allowance:3,paths:{"Needle 1":2.5,"Needle 2":2.5,"Needle 3":2.5,"Looper 1":10.5,"Spreader 1":10}},
+ {code:"607",description:"6-Thread Flatlock / Interlock",machine:"Flat seamer / flatlock",family:"B",allowance:3,paths:{"Needle 1":2.5,"Needle 2":2.5,"Needle 3":2.5,"Needle 4":2.5,"Looper 1":11,"Spreader 1":11}},
+ {code:"BrTk",description:"Bartack",machine:"Bartack / cycle sewing machine",family:"C",allowance:0,paths:{"Needle 1":24,"Bobbin 1":24}},
+ {code:"BH",description:"Button Hole",machine:"Button hole machine",family:"C",allowance:0,paths:{"Needle 1":28,"Bobbin 1":28}},
+ {code:"BA",description:"Button Attach",machine:"Button attach machine",family:"C",allowance:0,paths:{"Needle 1":17,"Bobbin 1":17}}
+];
+const THREAD_TYPES=["Spun Polyester","Polyester Core-Spun","Cotton-Wrapped Polyester Core","Polyester-Wrapped Polyester Core","Continuous Filament Polyester","Textured Polyester","Nylon","Bonded Nylon","Cotton","Recycled Polyester","Elastic Thread","Metallic Thread","Monofilament","Other"];
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const uid=()=>Math.random().toString(36).slice(2,10);
+const num=v=>Number.isFinite(parseFloat(v))?parseFloat(v):0;
+const fmt=(v,d=2)=>Number(v||0).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
+const esc=s=>String(s??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+const totalFactor=m=>Object.values(m.paths).reduce((a,b)=>a+b,0);
+let state={
+ meta:{factory:"",buyer:"",styleNo:"",orderNo:"",garmentType:"",season:"",orderQty:0,currency:"USD",samplePct:0,setupPct:0,safetyPct:0,preparedBy:""},
+ colours:[{id:uid(),name:"Black",code:"BLK",hex:"#111827",qty:0}],operations:[]
+};
+function emptyThread(){return {colour:"",colourCode:"",type:"Spun Polyester",tex:"",ticket:"",sku:"",coneLength:5000,conePrice:0,brand:"",supplier:""}}
+function makeOperation(){const m=MASTER[0];return {id:uid(),name:"",colourwayId:"ALL",stitch:m.code,measurement:0,frequency:1,wastage:0,spi:"",gsm:"",thickness:"",plies:"",seamType:"",needleGauge:"",calibration:1,calibrationNote:"",collapsed:false,threads:Object.fromEntries(Object.keys(m.paths).map(p=>[p,emptyThread()]))}}
+function switchTab(id){$$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.target===id));$$('.panel').forEach(p=>p.classList.toggle('active',p.id===id));if(id==='summaryPanel')calculateAll()}
+$$('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.target));
+function bindMeta(){Object.keys(state.meta).forEach(k=>{const el=$('#'+k);if(!el)return;el.value=state.meta[k];el.oninput=()=>{state.meta[k]=el.type==='number'?num(el.value):el.value;renderColours();calculateAll();autoSave()}})}
+function renderColours(){
+ const body=$('#colourBody'); body.innerHTML='';
+ state.colours.forEach(c=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input data-cid="${c.id}" data-f="name" value="${esc(c.name)}"></td><td><input data-cid="${c.id}" data-f="code" value="${esc(c.code)}"></td><td><div class="colour-chip"><input data-cid="${c.id}" data-f="hex" type="color" value="${esc(c.hex||'#9ca3af')}" style="width:46px;padding:4px"><span class="swatch" style="background:${esc(c.hex)}"></span></div></td><td><input data-cid="${c.id}" data-f="qty" type="number" min="0" step="1" value="${c.qty}"></td><td class="no-print"><button class="btn danger small" data-del-colour="${c.id}">Delete</button></td>`;body.appendChild(tr)});
+ $$('[data-cid]').forEach(el=>{const update=()=>{const c=state.colours.find(x=>x.id===el.dataset.cid);c[el.dataset.f]=el.dataset.f==='qty'?num(el.value):el.value;validateColours();calculateAll();autoSave()};el.oninput=update;el.onchange=()=>{update();renderColours();renderOperations()}});
+ $$('[data-del-colour]').forEach(b=>b.onclick=()=>{if(state.colours.length===1)return alert('At least one colourway is required.');state.colours=state.colours.filter(c=>c.id!==b.dataset.delColour);state.operations.forEach(o=>{if(o.colourwayId===b.dataset.delColour)o.colourwayId='ALL'});renderColours();renderOperations();calculateAll();autoSave()});
+ validateColours();
+}
+function validateColours(){const total=state.colours.reduce((a,c)=>a+num(c.qty),0),order=num(state.meta.orderQty),el=$('#colourValidation');if(order===0){el.innerHTML='<div class="notice">Enter total order quantity and colour-wise quantities.</div>'}else if(total!==order){el.innerHTML=`<div class="notice error">Colour quantity total is ${fmt(total,0)}, but order quantity is ${fmt(order,0)}. Difference: ${fmt(total-order,0)}.</div>`}else{el.innerHTML='<div class="notice success">Colour-wise quantity matches total order quantity.</div>'}}
+function stitchOptions(selected){return MASTER.map(m=>`<option value="${m.code}" ${m.code===selected?'selected':''}>${m.code} — ${esc(m.description)}</option>`).join('')}
+function colourOptions(selected){return `<option value="ALL" ${selected==='ALL'?'selected':''}>All colourways</option>`+state.colours.map(c=>`<option value="${c.id}" ${c.id===selected?'selected':''}>${esc(c.name||c.code)}</option>`).join('')}
+function typeOptions(selected){return THREAD_TYPES.map(t=>`<option ${t===selected?'selected':''}>${t}</option>`).join('')}
+function formulaText(m,cal=1){const tf=totalFactor(m),effTf=+(tf*cal).toFixed(4),note=cal!==1?` (effective total factor = ${tf} × ${cal} = ${effTf})`:'';if(m.family==='A')return `((measurement × ${effTf}) + ${m.allowance}) × frequency × 0.0254${note}`;if(m.family==='B')return `(measurement + ${m.allowance}) × ${effTf} × frequency × 0.0254${note}`;return `cycle length × ${effTf} × frequency × 0.0254${note}`}
+function renderOperations(){
+ const box=$('#operationsList');box.innerHTML='';
+ if(!state.operations.length){box.innerHTML='<div class="empty">No operation added. Click “Add Operation”.</div>';return}
+ state.operations.forEach((o,i)=>{const m=MASTER.find(x=>x.code===o.stitch)||MASTER[0];syncPaths(o,m);const orderQty=getOperationQty(o);const div=document.createElement('div');div.className='operation';div.innerHTML=`
+ <div class="op-head" data-toggle="${o.id}"><div class="op-title"><span class="badge">${i+1}</span><div><b>${esc(o.name||'Unnamed operation')}</b><div class="helper">${m.code} • ${esc(m.description)} • ${esc(getColourName(o.colourwayId))}</div></div></div><div><span class="pill">${fmt(calcOperation(o).finalPerGarment,3)} m/garment</span> <span class="muted">${o.collapsed?'▸':'▾'}</span></div></div>
+ <div class="op-body ${o.collapsed?'collapsed':''}">
+  <div class="grid">
+   <div class="field w4"><label>Operation Name<span class="bn">অপারেশন</span></label><input data-oid="${o.id}" data-f="name" value="${esc(o.name)}" placeholder="e.g. Side seam"></div>
+   <div class="field w4"><label>Garment Colourway<span class="bn">গার্মেন্ট কালার</span></label><select data-oid="${o.id}" data-f="colourwayId">${colourOptions(o.colourwayId)}</select></div>
+   <div class="field w4"><label>Stitch Class<span class="bn">সেলাই ক্লাস</span></label><select data-oid="${o.id}" data-f="stitch">${stitchOptions(o.stitch)}</select></div>
+   <div class="field w2"><label>${m.family==='C'?'Cycle Length':'Seam Measurement'} (inch)<span class="bn">মাপ</span></label><input data-oid="${o.id}" data-f="measurement" type="number" min="0" step="0.001" value="${o.measurement}"></div>
+   <div class="field w2"><label>Frequency<span class="bn">প্রতি গার্মেন্টে সংখ্যা</span></label><input data-oid="${o.id}" data-f="frequency" type="number" min="1" step="1" value="${o.frequency}"></div>
+   <div class="field w2"><label>Wastage %<span class="bn">অপচয়</span></label><input data-oid="${o.id}" data-f="wastage" type="number" min="0" step="0.01" value="${o.wastage}"></div>
+   <div class="field w2"><label>Approved Multiplier<span class="bn">ক্যালিব্রেশন</span></label><input data-oid="${o.id}" data-f="calibration" type="number" min="0.0001" step="0.0001" value="${o.calibration}"></div>
+   <div class="field w2"><label>Order Qty Used<span class="bn">প্রযোজ্য অর্ডার</span></label><input value="${orderQty}" readonly></div>
+   <div class="field w2"><label>Total Factor<span class="bn">মেশিন ফ্যাক্টর</span></label><input value="${totalFactor(m)}" readonly></div>
+   <div class="field w2"><label>SPI</label><input data-oid="${o.id}" data-f="spi" type="number" min="0" step="0.1" value="${o.spi}"></div>
+   <div class="field w2"><label>Fabric GSM</label><input data-oid="${o.id}" data-f="gsm" type="number" min="0" step="0.1" value="${o.gsm}"></div>
+   <div class="field w2"><label>Thickness</label><input data-oid="${o.id}" data-f="thickness" type="number" min="0" step="0.001" value="${o.thickness}"></div>
+   <div class="field w2"><label>Fabric Plies</label><input data-oid="${o.id}" data-f="plies" type="number" min="0" step="1" value="${o.plies}"></div>
+   <div class="field w2"><label>Seam Type</label><input data-oid="${o.id}" data-f="seamType" value="${esc(o.seamType)}"></div>
+   <div class="field w2"><label>Needle Gauge</label><input data-oid="${o.id}" data-f="needleGauge" value="${esc(o.needleGauge)}"></div>
+   <div class="field w6"><label>Calibration Approval Note<span class="bn">Multiplier 1.0000 না হলে কারণ লিখুন</span></label><input data-oid="${o.id}" data-f="calibrationNote" value="${esc(o.calibrationNote)}" placeholder="Test reference / approver"></div>
+  </div>
+  <div class="formula">${formulaText(m,num(o.calibration)||1)}<br>Family ${m.family} • Tail allowance: ${m.allowance} inch • Order quantity: ${orderQty}</div>
+  <div class="paths">${Object.entries(m.paths).map(([p,f])=>renderPath(o,p,f)).join('')}</div>
+  <div class="actions no-print" style="margin-top:12px"><button class="btn small" data-duplicate="${o.id}">Duplicate</button><button class="btn danger small" data-delete="${o.id}">Delete Operation</button></div>
+ </div>`;box.appendChild(div)});
+ bindOperationEvents();validateOperations();
+}
+function renderPath(o,path,factor){const t=o.threads[path]||emptyThread(),r=calcPath(o,path,factor),cal=Math.max(0,num(o.calibration))||1,effFactor=+(factor*cal).toFixed(4),factorLabel=cal!==1?`Factor ${factor} → eff. ${effFactor}`:`Factor ${factor}`;return `<div class="path"><div class="path-title"><span>${path}</span><span class="path-factor">${factorLabel}</span></div><div class="grid">
+ <div class="field"><label>Thread Colour<span class="bn">সুতার রং</span></label><input data-thread="${o.id}|${path}|colour" value="${esc(t.colour)}" placeholder="Navy"></div>
+ <div class="field"><label>Colour Code</label><input data-thread="${o.id}|${path}|colourCode" value="${esc(t.colourCode)}" placeholder="NV-01"></div>
+ <div class="field"><label>Thread Type<span class="bn">সুতার ধরন</span></label><select data-thread="${o.id}|${path}|type">${typeOptions(t.type)}</select></div>
+ <div class="field"><label>Tex / Ticket</label><input data-thread="${o.id}|${path}|tex" value="${esc(t.tex)}" placeholder="Tex 24"></div>
+ <div class="field"><label>Thread SKU</label><input data-thread="${o.id}|${path}|sku" value="${esc(t.sku)}" placeholder="SKU-001"></div>
+ <div class="field"><label>Cone Length (m)</label><input data-thread="${o.id}|${path}|coneLength" type="number" min="0.01" step="1" value="${t.coneLength}"></div>
+ <div class="field"><label>Cone Price</label><input data-thread="${o.id}|${path}|conePrice" type="number" min="0" step="0.01" value="${t.conePrice}"></div>
+ <div class="field"><label>Brand / Supplier</label><input data-thread="${o.id}|${path}|brand" value="${esc(t.brand)}" placeholder="Brand"></div>
+ </div><div class="path-result"><div class="mini"><span>Net / garment</span><b>${fmt(r.net,4)} m</b></div><div class="mini"><span>Wastage</span><b>${fmt(r.waste,4)} m</b></div><div class="mini"><span>Final / garment</span><b>${fmt(r.final,4)} m</b></div></div></div>`}
+function bindOperationEvents(){
+ $$('[data-toggle]').forEach(e=>e.onclick=()=>{const o=state.operations.find(x=>x.id===e.dataset.toggle);o.collapsed=!o.collapsed;renderOperations()});
+ $$('[data-oid]').forEach(el=>{const update=()=>{const o=state.operations.find(x=>x.id===el.dataset.oid),f=el.dataset.f;const numeric=['measurement','frequency','wastage','calibration','spi','gsm','thickness','plies'].includes(f);const oldStitch=o.stitch;o[f]=numeric?num(el.value):el.value;if(f==='stitch'&&oldStitch!==o.stitch){const m=MASTER.find(x=>x.code===o.stitch);const old=o.threads;o.threads={};Object.keys(m.paths).forEach(p=>o.threads[p]=old[p]||emptyThread())}calculateAll();autoSave()};el.oninput=update;el.onchange=()=>{update();renderOperations()}});
+ $$('[data-thread]').forEach(el=>{const update=()=>{const [oid,path,f]=el.dataset.thread.split('|'),o=state.operations.find(x=>x.id===oid);o.threads[path][f]=['coneLength','conePrice'].includes(f)?num(el.value):el.value;calculateAll();autoSave()};el.oninput=update;el.onchange=update});
+ $$('[data-delete]').forEach(b=>b.onclick=()=>{state.operations=state.operations.filter(o=>o.id!==b.dataset.delete);renderOperations();calculateAll();autoSave()});
+ $$('[data-duplicate]').forEach(b=>b.onclick=()=>{const o=state.operations.find(x=>x.id===b.dataset.duplicate),copy=JSON.parse(JSON.stringify(o));copy.id=uid();copy.name=(copy.name||'Operation')+' copy';state.operations.splice(state.operations.indexOf(o)+1,0,copy);renderOperations();calculateAll();autoSave()});
+}
+function syncPaths(o,m){o.threads=o.threads||{};Object.keys(m.paths).forEach(p=>{if(!o.threads[p])o.threads[p]=emptyThread()});Object.keys(o.threads).forEach(p=>{if(!(p in m.paths))delete o.threads[p]})}
+function getColourName(id){if(id==='ALL')return 'All colourways';const c=state.colours.find(x=>x.id===id);return c?c.name||c.code:'Unknown'}
+function getOperationQty(o){if(o.colourwayId==='ALL')return num(state.meta.orderQty);return num((state.colours.find(c=>c.id===o.colourwayId)||{}).qty)}
+function calcPath(o,path,factor){const m=MASTER.find(x=>x.code===o.stitch)||MASTER[0],meas=num(o.measurement),freq=Math.max(0,num(o.frequency)),cal=Math.max(0,num(o.calibration))||1,effFactor=factor*cal;let inch=0;if(m.family==='A')inch=(meas*effFactor*freq)+((m.allowance/2)*freq);else if(m.family==='B')inch=(meas+m.allowance)*effFactor*freq;else inch=meas*effFactor*freq;const net=inch*.0254,waste=net*num(o.wastage)/100;return{net,waste,final:net+waste}}
+function calcOperation(o){const m=MASTER.find(x=>x.code===o.stitch)||MASTER[0];let net=0,waste=0;Object.entries(m.paths).forEach(([p,f])=>{const r=calcPath(o,p,f);net+=r.net;waste+=r.waste});return{netPerGarment:net,wastePerGarment:waste,finalPerGarment:net+waste,qty:getOperationQty(o),netOrder:net*getOperationQty(o),wasteOrder:waste*getOperationQty(o),finalOrder:(net+waste)*getOperationQty(o)}}
+function validateOperations(){const issues=[];state.operations.forEach((o,i)=>{const m=MASTER.find(x=>x.code===o.stitch);if(!o.name)issues.push(`Operation ${i+1}: name is missing.`);if(num(o.measurement)<=0)issues.push(`Operation ${i+1}: measurement/cycle length must be greater than zero.`);if(!Number.isInteger(num(o.frequency))||num(o.frequency)<=0)issues.push(`Operation ${i+1}: frequency must be a positive whole number.`);if(num(o.calibration)!==1&&!o.calibrationNote)issues.push(`Operation ${i+1}: calibration multiplier needs an approval note.`);Object.keys(m.paths).forEach(p=>{const t=o.threads[p];if(!t.colour)issues.push(`Operation ${i+1} ${p}: thread colour is missing.`);if(!t.type)issues.push(`Operation ${i+1} ${p}: thread type is missing.`);if(!t.sku)issues.push(`Operation ${i+1} ${p}: thread SKU is missing.`);if(num(t.coneLength)<=0)issues.push(`Operation ${i+1} ${p}: cone length must be greater than zero.`)});const pathSum=Object.entries(m.paths).reduce((a,[p,f])=>a+calcPath(o,p,f).net,0);const op=calcOperation(o);if(Math.abs(pathSum-op.netPerGarment)>1e-9)issues.push(`Operation ${i+1}: path sum mismatch.`)});const el=$('#operationValidation');el.innerHTML=issues.length?`<div class="notice error"><b>${issues.length} validation issue(s)</b><br>${issues.slice(0,12).map(esc).join('<br>')}${issues.length>12?'<br>…':''}</div>`:'<div class="notice success">All operation calculations and thread paths are valid.</div>';return issues}
+function collectLines(){const lines=[];state.operations.forEach((o,opIndex)=>{const m=MASTER.find(x=>x.code===o.stitch),qty=getOperationQty(o),garmentColour=getColourName(o.colourwayId);Object.entries(m.paths).forEach(([path,factor])=>{const t=o.threads[path],r=calcPath(o,path,factor);lines.push({opIndex:opIndex+1,operation:o.name||`Operation ${opIndex+1}`,stitch:o.stitch,garmentColour,path,factor,threadColour:t.colour||'Unassigned',colourCode:t.colourCode||'',type:t.type||'Unassigned',tex:t.tex||t.ticket||'',sku:t.sku||'(No SKU)',coneLength:num(t.coneLength),conePrice:num(t.conePrice),net:r.net*qty,waste:r.waste*qty,final:r.final*qty,netPerGarment:r.net,finalPerGarment:r.final,qty})})});return lines}
+function aggregate(lines,keyFn){const m=new Map();lines.forEach(x=>{const k=keyFn(x);if(!m.has(k))m.set(k,{...x,net:0,waste:0,final:0,skus:new Set(),ops:new Set()});const a=m.get(k);a.net+=x.net;a.waste+=x.waste;a.final+=x.final;a.skus.add(x.sku);a.ops.add(x.operation)});return [...m.values()]}
+function calculateAll(){
+ validateColours();const issues=validateOperations(),lines=collectLines(),sample=num(state.meta.samplePct)/100,setup=num(state.meta.setupPct)/100,safety=num(state.meta.safetyPct)/100;
+ const additions=x=>{const sampleM=x.net*sample,setupM=x.net*setup,safetyM=(x.net+x.waste+sampleM+setupM)*safety;return{sampleM,setupM,safetyM,add:sampleM+setupM+safetyM,finalBooking:x.final+sampleM+setupM+safetyM}};
+ const norm=s=>String(s||'').trim().toLowerCase();
+ const colourKey=x=>[norm(x.garmentColour),norm(x.threadColour),norm(x.type),norm(x.tex),String(x.sku||'').trim(),x.coneLength,x.conePrice].join('¦');
+ const typeKey=x=>[norm(x.type),norm(x.tex)].join('¦');
+ const skuKey=x=>[String(x.sku||'').trim(),norm(x.threadColour),norm(x.type),norm(x.tex),x.coneLength,x.conePrice].join('¦');
+ const colourAgg=aggregate(lines,colourKey).map(x=>Object.assign(x,additions(x)));
+ const typeAgg=aggregate(lines,typeKey).map(x=>Object.assign(x,additions(x)));
+ const skuAgg=aggregate(lines,skuKey).map(x=>Object.assign(x,additions(x)));
+ const order=num(state.meta.orderQty),totalNet=lines.reduce((a,x)=>a+x.net,0),totalWaste=lines.reduce((a,x)=>a+x.waste,0),totalFinal=skuAgg.reduce((a,x)=>a+x.finalBooking,0),totalCones=skuAgg.reduce((a,x)=>a+(x.coneLength>0?Math.ceil(x.finalBooking/x.coneLength):0),0),totalCost=skuAgg.reduce((a,x)=>a+(x.coneLength>0?Math.ceil(x.finalBooking/x.coneLength)*x.conePrice:0),0);
+ $('#kpiAvgNet').innerHTML=`${fmt(order?totalNet/order:0,3)}<span class="unit">m</span>`;$('#kpiFinal').innerHTML=`${fmt(totalFinal,2)}<span class="unit">m</span>`;$('#kpiWaste').innerHTML=`${fmt(totalWaste,2)}<span class="unit">m</span>`;$('#kpiCones').textContent=fmt(totalCones,0);$('#kpiSkus').textContent=new Set(lines.map(x=>x.sku).filter(x=>x&&x!=='(No SKU)')).size;$('#kpiCost').textContent=`${state.meta.currency} ${fmt(totalCost,2)}`;
+ let summaryNotice=(issues.length||state.colours.reduce((a,c)=>a+num(c.qty),0)!==order)?'<div class="notice error">Summary is provisional because validation issues remain.</div>':'<div class="notice success">Summary is ready for review. All displayed calculations come from factory formulas.</div>';
+ if(lines.length&&totalFinal===0){
+  const reasons=[];
+  if(order<=0&&state.operations.some(o=>o.colourwayId==='ALL'))reasons.push('Total Order Quantity is 0 on the Style & Order tab (used by operations set to "All colourways").');
+  if(state.operations.some(o=>{const m=MASTER.find(x=>x.code===o.stitch)||MASTER[0];return num(o.measurement)<=0}))reasons.push('One or more operations have Seam Measurement / Cycle Length set to 0.');
+  if(state.operations.some(o=>num(o.frequency)<=0))reasons.push('One or more operations have Frequency set to 0.');
+  if(state.operations.some(o=>o.colourwayId!=='ALL'&&num((state.colours.find(c=>c.id===o.colourwayId)||{}).qty)<=0))reasons.push('One or more operations are assigned to a colourway whose Order Quantity is 0.');
+  summaryNotice+=`<div class="notice error">All totals are showing 0 even though thread lines exist. Likely cause: ${reasons.length?reasons.join(' '):'check that Total Order Quantity, colourway quantities, and each operation\u2019s measurement/cycle length and frequency are filled in.'}</div>`;
+ }
+ $('#summaryValidation').innerHTML=summaryNotice;
+ const cb=$('#colourSummaryBody');cb.innerHTML=colourAgg.length?'':'<tr><td colspan="12" class="empty">No calculated data.</td></tr>';colourAgg.forEach(x=>{const exact=x.coneLength?x.finalBooking/x.coneLength:0,cones=x.coneLength?Math.ceil(exact):0,cost=cones*x.conePrice;cb.insertAdjacentHTML('beforeend',`<tr><td>${esc(x.garmentColour)}</td><td>${esc(x.threadColour)} ${x.colourCode?`<span class="muted">(${esc(x.colourCode)})</span>`:''}</td><td>${esc(x.type)}</td><td>${esc(x.tex)}</td><td>${esc(x.sku)}</td><td class="right">${fmt(x.net,2)}</td><td class="right">${fmt(x.waste,2)}</td><td class="right">${fmt(x.add,2)}</td><td class="right"><b>${fmt(x.finalBooking,2)}</b></td><td class="right">${fmt(exact,3)}</td><td class="right"><b>${cones}</b></td><td class="right">${state.meta.currency} ${fmt(cost,2)}</td></tr>`)});
+ const tb=$('#typeSummaryBody');tb.innerHTML=typeAgg.length?'':'<tr><td colspan="7" class="empty">No calculated data.</td></tr>';typeAgg.forEach(x=>{const related=skuAgg.filter(s=>norm(s.type)===norm(x.type)&&norm(s.tex)===norm(x.tex)),cones=related.reduce((a,s)=>a+(s.coneLength?Math.ceil(s.finalBooking/s.coneLength):0),0),cost=related.reduce((a,s)=>a+(s.coneLength?Math.ceil(s.finalBooking/s.coneLength)*s.conePrice:0),0);tb.insertAdjacentHTML('beforeend',`<tr><td>${esc(x.type)}</td><td>${esc(x.tex)}</td><td>${x.skus.size}</td><td class="right">${fmt(x.net,2)}</td><td class="right">${fmt(x.finalBooking,2)}</td><td class="right">${cones}</td><td class="right">${state.meta.currency} ${fmt(cost,2)}</td></tr>`)});
+ const ob=$('#operationSummaryBody');ob.innerHTML=state.operations.length?'':'<tr><td colspan="10" class="empty">No operation added.</td></tr>';state.operations.forEach((o,i)=>{const r=calcOperation(o);ob.insertAdjacentHTML('beforeend',`<tr><td>${i+1}</td><td>${esc(o.name||'Unnamed')}</td><td>${esc(getColourName(o.colourwayId))}</td><td>${esc(o.stitch)}</td><td>${fmt(o.measurement,3)} in</td><td>${o.frequency}</td><td class="right">${fmt(r.netPerGarment,4)}</td><td class="right">${fmt(r.finalPerGarment,4)}</td><td class="right">${fmt(r.qty,0)}</td><td class="right"><b>${fmt(r.finalOrder,2)}</b></td></tr>`)});
+ const chart=$('#opChart'),opData=state.operations.map(o=>({name:o.name||'Unnamed',v:calcOperation(o).finalOrder})).sort((a,b)=>b.v-a.v).slice(0,8),max=Math.max(1,...opData.map(x=>x.v));chart.innerHTML=opData.length?'':'<div class="empty">No operation data.</div>';opData.forEach(x=>chart.insertAdjacentHTML('beforeend',`<div class="chart-row"><span>${esc(x.name)}</span><div class="bar"><i style="width:${Math.max(2,x.v/max*100)}%"></i></div><b class="right">${fmt(x.v,1)} m</b></div>`));
+ window.__summary={lines,colourAgg,typeAgg,skuAgg,totalNet,totalWaste,totalFinal,totalCones,totalCost};
+}
+function renderMaster(){const b=$('#masterBody');b.innerHTML='';MASTER.forEach(m=>{const needles=Object.entries(m.paths).filter(([p])=>p.startsWith('Needle')).map(([p,f])=>`${p.replace('Needle ','N')}: ${f}`).join(', ')||'—',bobbins=Object.entries(m.paths).filter(([p])=>p.startsWith('Bobbin')).map(([,f])=>f).join(', ')||'—',loopers=Object.entries(m.paths).filter(([p])=>p.startsWith('Looper')).map(([p,f])=>`${p.replace('Looper ','L')}: ${f}`).join(', ')||'—',spreaders=Object.entries(m.paths).filter(([p])=>p.startsWith('Spreader')).map(([p,f])=>`${p.replace('Spreader ','S')}: ${f}`).join(', ')||'—';b.insertAdjacentHTML('beforeend',`<tr ${m.code==='516'?'class="master-row-active"':''}><td><b>${m.code}</b></td><td>${esc(m.description)}</td><td>${esc(m.machine)}</td><td>Family ${m.family}</td><td>${needles}</td><td>${bobbins}</td><td>${loopers}</td><td>${spreaders}</td><td><b>${totalFactor(m)}</b></td><td>${m.allowance} in</td></tr>`)})}
+function autoSave(){localStorage.setItem('threadCalcFactoryV1',JSON.stringify(state))}
+function save(){autoSave();alert('Project saved in this browser.')}
+function exportProject(){const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),state},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${state.meta.styleNo||'thread-calculator'}-project.json`;a.click();URL.revokeObjectURL(a.href)}
+function importProject(file){const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state=d.state||d;normalizeState();renderAll();autoSave();alert('Project imported successfully.')}catch(e){alert('Invalid project file: '+e.message)}};r.readAsText(file)}
+function csvCell(v){return `"${String(v??'').replace(/"/g,'""')}"`}
+function exportCsv(){calculateAll();const rows=[["Garment Colour","Thread Colour","Thread Type","Tex/Ticket","SKU","Net Metre","Wastage Metre","Booking Additions Metre","Final Metre","Cone Length","Rounded Cones","Cone Price","Cost"]];(window.__summary?.colourAgg||[]).forEach(x=>{const cones=x.coneLength?Math.ceil(x.finalBooking/x.coneLength):0;rows.push([x.garmentColour,x.threadColour,x.type,x.tex,x.sku,x.net,x.waste,x.add,x.finalBooking,x.coneLength,cones,x.conePrice,cones*x.conePrice])});const blob=new Blob(['\ufeff'+rows.map(r=>r.map(csvCell).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${state.meta.styleNo||'thread'}-summary.csv`;a.click();URL.revokeObjectURL(a.href)}
+function normalizeState(){state.meta=Object.assign({factory:"",buyer:"",styleNo:"",orderNo:"",garmentType:"",season:"",orderQty:0,currency:"USD",samplePct:0,setupPct:0,safetyPct:0,preparedBy:""},state.meta||{});state.colours=state.colours?.length?state.colours:[{id:uid(),name:"Black",code:"BLK",hex:"#111827",qty:0}];state.operations=state.operations||[];state.operations.forEach(o=>{o.id=o.id||uid();o.calibration=o.calibration||1;o.threads=o.threads||{};syncPaths(o,MASTER.find(m=>m.code===o.stitch)||MASTER[0])})}
+function renderAll(){bindMeta();renderColours();renderOperations();renderMaster();calculateAll()}
+$('#addColourBtn').onclick=()=>{state.colours.push({id:uid(),name:"",code:"",hex:"#9ca3af",qty:0});renderColours();renderOperations();autoSave()};
+$('#addOperationBtn').onclick=()=>{state.operations.push(makeOperation());renderOperations();calculateAll();autoSave()};
+$('#saveBtn').onclick=save;$('#exportJsonBtn').onclick=exportProject;$('#importJsonBtn').onclick=()=>$('#importFile').click();$('#importFile').onchange=e=>e.target.files[0]&&importProject(e.target.files[0]);$('#exportCsvBtn').onclick=exportCsv;$('#printBtn').onclick=()=>{switchTab('summaryPanel');setTimeout(()=>window.print(),50)};
+const saved=localStorage.getItem('threadCalcFactoryV1');if(saved){try{state=JSON.parse(saved)}catch(e){}}normalizeState();if(!state.operations.length)state.operations.push(makeOperation());renderAll();
+</script>
+</body>
+</html>
